@@ -41,7 +41,7 @@ function RPNPCS_Create ( class, pos, respawn, health )
 	local ragdoll = ents.Create( class )
 	ragdoll:Spawn()
 	ragdoll:SetPos(pos)
-	ragdoll:GetTable().RespawnWhenDead = respawn
+	ragdoll:GetTable().RespawnWhenDead = false
 	ragdoll:GetTable().StartPos = pos
 	ragdoll:SetHealth(health)
 	ragdoll:GetTable().StartHealth = health
