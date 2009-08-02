@@ -383,10 +383,8 @@ end
 ---------------------------------------------------------*/
 function GM:PlayerSetModel( pl )
 
-	local cl_playermodel = pl:GetInfo( "cl_playermodel" )
-	local modelname = player_manager.TranslatePlayerModel( cl_playermodel )
-	util.PrecacheModel( modelname )
-	pl:SetModel( modelname )
+	util.PrecacheModel( pl:GetNWString( "pmodel" ) )
+	pl:SetModel( pl:GetNWString( "pmodel" ) )
 	
 end
 
