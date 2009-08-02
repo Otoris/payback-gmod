@@ -1,3 +1,9 @@
+AddCSLuaFile( 'cl_scoreboard.lua' )
+AddCSLuaFile( 'cl_weather.lua' )
+AddCSLuaFile( 'cl_hudpickup.lua' )
+AddCSLuaFile( 'cl_init.lua' )
+AddCSLuaFile( 'cl_targetid.lua' )
+AddCSLuaFile( 'cl_deathnotice.lua' )
 
 include( 'shared.lua' )
 include( 'player.lua' )
@@ -9,7 +15,25 @@ GM.PlayerSpawnTime = {}
    Name: gamemode:Initialize( )
    Desc: Called immediately after starting the gamemode 
 ---------------------------------------------------------*/
-function GM:Initialize( )
+
+function GM:Initialize( )	
+local Weathers = {
+
+	"sunny",
+	"cloudy",
+	"rain",
+	"sunnyrain",
+	"storm",
+	"dark",
+	"darkrain"
+
+}
+	
+
+timer.Create( "pbweathertimer", 120, 0, function()
+	SetGlobalString( "weather", Weathers[math.random(1, #Weathers)] )
+end )
+
 end
 
 
@@ -104,11 +128,33 @@ function GM:ShowTeam( ply )
 
 end
 
+function GM:ShowHelp( ply )
+
+	RunConsoleCommand( "pb_playermenu" )
+	
+end
+
 function GM:SetupPlayerVisibility(ply) 
  	AddOriginToPVS(Vector(0,0,0)) 
 end 
 
+function ccWeather( ply, cmd, args )
 
+	if args[1] == "1" then
+		ply:SetNWInt( "pbweather", 1 )
+	elseif args[1] == "0" then
+		ply:SetNWInt( "pbweather", 0 )
+	end
+	
+end
+concommand.Add( "pb_weather", ccWeather )
 
+function ccSetModel( ply, cmd, args )
+
+	ply:SetNWString( "pmodel", args[1] )
+	ply:KillSilent()
+	
+end
+concommand.Add( "pb_setmodel", ccSetModel )
 
 

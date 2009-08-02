@@ -1,6 +1,7 @@
 
 
 include( 'shared.lua' )
+include( 'cl_weather.lua' )
 include( 'cl_scoreboard.lua' )
 include( 'cl_targetid.lua' )
 include( 'cl_hudpickup.lua' )
@@ -21,6 +22,9 @@ function GM:Initialize( )
 	surface.CreateFont( "coolvetica", 48, 500, true, false, "ScoreboardHead" )
 	surface.CreateFont( "coolvetica", 24, 500, true, false, "ScoreboardSub" )
 	surface.CreateFont( "Tahoma", 16, 1000, true, false, "ScoreboardText" )
+	surface.CreateFont( "FARCRY", 46, 500, true, false, "scorefont" )
+	surface.CreateFont( "28 days later", 46, 500, true, false, "paybackfont2" )
+	
 	
 end
 
@@ -98,7 +102,6 @@ end
    Name: gamemode:HUDPaint( )
    Desc: Use this section to paint your HUD
 ---------------------------------------------------------*/
-surface.CreateFont( "FARCRY", 46, 500, true, false, "scorefont" )
 
 function GM:HUDPaint()
 	score = LocalPlayer():GetNWString( "MEPOINTS" )
@@ -185,7 +188,9 @@ function GM:HUDPaint()
 	end
 	
 	if drawblackbox == true then
-		draw.RoundedBox( 4, ScrW() / 2 - 250, ScrH() / 2 - 250, 500, 500, Color( 0, 0, 0, 255 ) )
+		draw.RoundedBox( 8, ScrW() / 2 - 250, ScrH() / 2 - 250, 500, 500, Color( 0, 0, 0, 255 ) )
+		draw.DrawText( "PAYBACK", "paybackfont2", ScrW() / 2 + 150, ScrH() / 2 - 300, Color( 255, 194, 67, 255 ), 1 )
+		draw.RoundedBox( 8, ScrW() / 2 + 10, ScrH() / 2 + 130, 150, 82, Color( 0, 0, 255, 7 ) )
 	end
 end
 
@@ -208,6 +213,10 @@ function GM:CreateMove( cmd )
 	
 	cmd:SetUpMove(0)
 	cmd:SetViewAngles( ang )
+
+	if cmd:KeyDown(IN_DUCK) then
+		LocalPlayer():ConCommand("-duck")
+	end
 	
 end
 
@@ -597,28 +606,13 @@ function GM:AdjustMouseSensitivity( fDefault )
 	return -1
 	
 end
-mdlList = {
 
-	"models/player/Group01/Female_02.mdl",
-    "models/player/Group01/Female_03.mdl",
-    "models/player/Group01/Male_01.mdl",
-	"models/player/Group01/male_07.mdl"
-	
-}
 
-nameList = {
 
-	"Jean",
-	"Lisa",
-	"Mike",
-	"Jack"
-		
-}
 function PBMENU( ply )
 
 	drawblackbox = true
-	local name = 1
-	local i = 1
+
 	DermaPanel = vgui.Create( "DFrame" )
 	DermaPanel:SetSize( 500, 500 )
 	--DermaPanel:SetPos( ScrW() / 2 - 250, ScrH() / 2 - 250 )
@@ -626,10 +620,48 @@ function PBMENU( ply )
 	DermaPanel:SetDraggable( false )
 	DermaPanel:ShowCloseButton( false )
 	DermaPanel.Paint = function()
-		surface.SetDrawColor( 0, 0, 0, 0 )
+		surface.SetDrawColor( 0, 0, 0, 255 )
 	end
 	
+	local astrisk = vgui.Create( "DLabel", DermaPanel )
+	astrisk:SetPos( 255, 8 )
+	astrisk:SetText( "*" )
 	
+	local StatsList = vgui.Create( "DListView", DermaPanel )
+	StatsList:SetSize( 100, 85 )
+	StatsList:SetPos( 260, 20 )
+	StatsList:SetMultiSelect( false )
+	StatsList:AddColumn("Stats")
+	StatsList:AddLine( KEVLAR[1] )
+	StatsList:AddLine( ST[1] )
+	StatsList:AddLine( SP[1] )
+	StatsList:AddLine( E[1] )	
+	
+	local StatsList2 = vgui.Create( "DListView", DermaPanel )
+	StatsList2:SetSize( 100, 85 )
+	StatsList2:SetPos( 380, 20 )
+	StatsList2:SetMultiSelect( false )
+	StatsList2:AddColumn("Description")
+	StatsList2:AddLine( Eyes[1] )
+	StatsList2:AddLine( Weight[1] )
+	StatsList2:AddLine( HColor[1] )
+	StatsList2:AddLine( FSize[1] )	
+	
+	local ScoreBoard = vgui.Create( "DListView", DermaPanel )
+	ScoreBoard:SetSize( 220, 250 )
+	ScoreBoard:SetPos( 260, 120 )
+	ScoreBoard:SetMultiSelect( false )
+	ScoreBoard:AddColumn("Players")
+	ScoreBoard:AddColumn("Score")
+	ScoreBoard:AddColumn("Ping")
+	for k,v in pairs(player.GetAll()) do 
+		ScoreBoard:AddLine(v:Nick(), v:GetNWString( "MEPOINTS" ), v:Ping()) // Add lines 
+	end  
+	ScoreBoard:SortByColumn( 1, true )
+	
+
+	
+		
 		-- local mdlPanelList = vgui.Create( "DPanelList" )
 		-- mdlPanelList:SetParent( DermaPanel )
 		-- mdlPanelList:SetSize( 480, 280 )
@@ -645,10 +677,14 @@ function PBMENU( ply )
 		-- for k, v in pairs( mdlList ) do
 			-- mdlSelect:AddChoice( v )
 		-- end
+		local mdlName = vgui.Create( "DLabel", DermaPanel )
+		mdlName:SetPos( 110, 450 )
+		mdlName:SetText( nameList[1] )
+		
 		local mdlPanel = vgui.Create( "DModelPanel", DermaPanel )
-		mdlPanel:SetSize( 240, 400 )
-		mdlPanel:SetPos( 5, 5 )
-		mdlPanel:SetModel( mdlList[i] )
+		mdlPanel:SetSize( 650, 650 )
+		mdlPanel:SetPos( -205, -205 )
+		mdlPanel:SetModel( mdlList[1] )
 		mdlPanel:SetAnimSpeed( 0.0 )
 		mdlPanel:SetAnimated( false )
 		mdlPanel:SetAmbientLight( Color( 50, 50, 50 ) )
@@ -657,27 +693,101 @@ function PBMENU( ply )
 		mdlPanel:SetCamPos( Vector( 100, 0, 40 ) )
 		mdlPanel:SetLookAt( Vector( 0, 0, 40 ) )
 		mdlPanel:SetFOV( 70 )
-	
+		
+		function mdlPanel:LayoutEntity(Entity)
+
+			self:RunAnimation();
+			Entity:SetAngles( Angle( 0, 0, 0) )
+		
+		end
+		
+		local name = 1
+		local i = 1
+		
+		local kv = 1
+		local stg = 1
+		local spe = 1
+		local en = 1
+		
+		local eye = 1
+		local we = 1
+		local hair = 1
+		local foot = 1
+		
 		local LastMdl = vgui.Create( "DSysButton", DermaPanel )
 		LastMdl:SetType("left")
 		LastMdl.DoClick = function()
+		
+			i = i - 1
+			name = name - 1
+			
+			kv = kv - 1
+			stg = stg - 1
+			spe = spe - 1
+			en = en - 1
+			
+			eye = eye - 1
+			we = we - 1
+			hair = hair - 1
+			foot = foot - 1
+			
+			if( i == 0 ) then
+				i = #mdlList
+			end
+		
+			if( name == 0 ) then
+				name = #nameList
+			end
+			
+			if( kv == 0 ) then
+				kv = #KEVLAR
+			end
+			
+			if( stg == 0 ) then
+				stg = #ST
+			end
+			
+			if( spe == 0 ) then
+				spe = #SP
+			end
+			
+			if( en == 0 ) then
+				en = #E
+			end
+			
+			if( eye == 0 ) then
+				eye = #Eyes
+			end
+			
+			if( we == 0 ) then
+				we = #Weight
+			end
+			
+			if( hair == 0 ) then
+				hair = #HColor
+			end
+			
+			if( foot == 0 ) then
+				foot = #FSize
+			end
+			mdlName:SetText( nameList[name] )
+			mdlPanel:SetModel(mdlList[i])
+			
+			StatsList:Clear()
+			StatsList:AddLine( KEVLAR[kv] )
+			StatsList:AddLine( ST[stg] )
+			StatsList:AddLine( SP[spe] )
+			StatsList:AddLine( E[en] )
+		
+			StatsList2:Clear()
+			StatsList2:AddLine( Eyes[eye] )
+			StatsList2:AddLine( Weight[we] )
+			StatsList2:AddLine( HColor[hair] )
+			StatsList2:AddLine( FSize[foot] )
+			
+		end
 
-		i = i - 1
-		name = name - 1
-		
-		if( i == 0 ) then
-			i = #mdlList
-		end
-		
-		if( name == 0 ) then
-			name = #nameList
-		end
-		
-		mdlPanel:SetModel(mdlList[i])
-		
-		end
-
-		LastMdl:SetPos( 10, 470 )
+		LastMdl:SetPos( 30, 450 )
 
 		local NextMdl = vgui.Create( "DSysButton", DermaPanel )
 		NextMdl:SetType("right")
@@ -685,6 +795,16 @@ function PBMENU( ply )
 
 		i = i + 1
 		name = name + 1
+		
+		kv = kv + 1
+		stg = stg + 1
+		spe = spe + 1
+		en = en + 1
+		
+		eye = eye + 1
+		we = we + 1
+		hair = hair + 1
+		foot = foot + 1
 		
 		if(i > #mdlList) then
 			i = 1
@@ -694,21 +814,93 @@ function PBMENU( ply )
 			name = 1
 		end
 		
+		if(kv > #KEVLAR) then
+			kv = 1
+		end
+		
+		if(stg > #ST) then
+			stg = 1
+		end
+		
+		if(spe > #SP) then
+			spe = 1
+		end
+		
+		if(en > #E) then
+			en = 1
+		end
+		
+		if(eye > #Eyes) then
+			eye = 1
+		end
+		
+		if(we > #Weight) then
+			we = 1
+		end
+		
+		if(hair > #HColor) then
+			hair = 1
+		end
+		
+		if(foot > #FSize) then
+			foot = 1
+		end
+		
+		mdlName:SetText( nameList[name] )
 		mdlPanel:SetModel(mdlList[i])
 		
-		end
-		NextMdl:SetPos( 140, 470 )
+		StatsList:Clear()
+		StatsList:AddLine( KEVLAR[kv] )
+		StatsList:AddLine( ST[stg] )
+		StatsList:AddLine( SP[spe] )
+		StatsList:AddLine( E[en] )
+
+		StatsList2:Clear()
+		StatsList2:AddLine( Eyes[eye] )
+		StatsList2:AddLine( Weight[we] )
+		StatsList2:AddLine( HColor[hair] )
+		StatsList2:AddLine( FSize[foot] )
+		
+	end
+		NextMdl:SetPos( 150, 450 )
 		
 		
 
-		
+	local RadioCheck = vgui.Create( "DCheckBoxLabel", DermaPanel )
+	RadioCheck:SetText( "Radio" )
+	RadioCheck:SetPos( 420, 380 )
+	RadioCheck:SetValue( 1 )
+
+	local WeatherCheck = vgui.Create( "DCheckBoxLabel", DermaPanel )
+	WeatherCheck:SetText( "Weather" )
+	WeatherCheck:SetPos( 420, 400 )
+	WeatherCheck:SetValue( 1 )
+	
+	local lol = vgui.Create( "DLabel", DermaPanel )
+	lol:SetPos( 260, 470 )
+	lol:SetSize( 1000, 22 )
+	lol:SetText( "* For show and concept purposes only!" )
+	
 		local applybutton = vgui.Create( "DButton" )
 		applybutton:SetParent( DermaPanel )
 		applybutton:SetText( "Apply" )
 		applybutton:SetSize( 60, 40 )
-		applybutton:SetPos( 400, 400 )
+		applybutton:SetPos( 420, 420 )
 		applybutton.DoClick = function()
 		drawblackbox = false
+		if RadioCheck:GetChecked() == true and !RadioOn then
+			PBRADIO()
+		elseif RadioCheck:GetChecked() == false and RadioOn == true then
+			RadioOn = false
+			RadioFrame:OpenURL( "http://www.duke.edu/~zjt3/" )
+		end
+		if WeatherCheck:GetChecked() then
+			RunConsoleCommand( "pb_weather", "1" )
+		else
+			RunConsoleCommand( "pb_weather", "0" )
+			RunConsoleCommand( "stopsounds" )
+		end
+		RunConsoleCommand( "pb_setmodel", mdlList[i] )
 		DermaPanel:Close()
 		end
 		
@@ -720,6 +912,22 @@ function PBMENU( ply )
 		-- mdlPanelList:AddItem( mdlSelect )
 end
 concommand.Add( "pb_playermenu", PBMENU )
+
+function PBRADIO( ply )
+
+	RadioPanel = vgui.Create( "DPanel" )
+	RadioPanel:SetSize( 110, 110 )
+	RadioPanel:SetPos( -1000000, -10000 )
+	--RadioPanel:MakePopup()
+	
+	RadioOn = true
+	RadioFrame = vgui.Create( "HTML", RadioPanel )
+	RadioFrame:SetSize( 100, 100 )
+	RadioFrame:SetPos( 5, 5 )
+	RadioFrame:OpenURL( "http://www.sourcetunes.com/players/server_player/play.php?id=default&chan=classicalternative" )
+
+end
+	
 /*---------------------------------------------------------
    Name: gamemode:ForceDermaSkin()
    Desc: Return the name of skin this gamemode should use.

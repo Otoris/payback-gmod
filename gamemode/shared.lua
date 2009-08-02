@@ -15,13 +15,103 @@ include( 'obj_player_extend.lua' )
 include( 'gravitygun.lua' )
 include( 'player_shd.lua' )
 
-GM.Name 		= "Base Gamemode"
-GM.Author 		= "Garry Newman"
-GM.Email 		= "garrynewman@gmail.com"
-GM.Website 		= "www.garry.tv"
+GM.Name 		= "Payback"
+GM.Author 		= "Otoris & Armageddon"
+GM.Email 		= "otoris@altusfilms.com"
+GM.Website 		= ""
 GM.TeamBased 	= false
 
+--Simple Tables
 
+mdlList = {}
+
+mdlList[1] = "models/player/Group01/Female_02.mdl"
+mdlList[2] = "models/player/Group01/Female_03.mdl"
+mdlList[3] = "models/player/Group01/Male_01.mdl"
+mdlList[4] = "models/player/Group01/male_07.mdl"
+	
+
+
+nameList = {
+
+	"Jean",
+	"Lisa",
+	"Mike",
+	"Jack"
+		
+}
+
+KEVLAR = {
+	
+	"Kevlar 20",
+	"Kevlar 32",
+	"Kevlar 19",
+	"Kevlar 23"
+
+}
+	
+
+ST = {
+
+	"Strength 80",
+	"Strength 75",
+	"Strength 92",
+	"Strength 83"
+}
+
+SP = {
+
+	"Speed 75",
+	"Speed 83",
+	"Speed 24",
+	"Speed 25"
+
+}
+
+E = {
+
+	"Stamina 90",
+	"Stamina 76",
+	"Stamina 72",
+	"Stamina 83"
+	
+}
+
+Eyes = {
+
+	"Dark Green Eyes",
+	"Steele Eyes",
+	"Black Eyes",
+	"Dark Blue Eyes"
+	
+}
+
+Weight = {
+
+	"Weight 128",
+	"Weight 132",
+	"Weight 175",
+	"Weight 180"
+
+}
+
+HColor = {
+
+	"Light Brown Hair",
+	"Dark Brown Hair",
+	"Black Hair",
+	"Black Hair"
+
+}
+
+FSize = {
+
+	"Foot Size 7",
+	"Foot Size 16",
+	"Foot Size 12",
+	"Foot Size 11"
+
+}
 /*---------------------------------------------------------
    Name: gamemode:PlayerHurt( )
    Desc: Called when a player is hurt.
