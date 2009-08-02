@@ -7,6 +7,8 @@ schdPatrol = ai_schedule.New( "AIFighter Chase" )
 schdChase = ai_schedule.New( "AIFighter Chase" )
 schdCorpse = ai_schedule.New( "AIFighter Chase" )
 
+RPNPCS_FlaggedPlayers = {}
+
 function ENT:TaskStart_FindEnemySmart ( data ) end
 function ENT:Task_CheckEnemyDead ( ) end
 function ENT:Task_ResetPatrol ( ) end
